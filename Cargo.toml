@@ -1,0 +1,19 @@
+[package]
+name = "honor-downloader"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+librqbit = { version = "6.0.0", default-features = false, features = [
+  "rust-tls",
+] }
+tracing = "0.1.40"
+tokio = { version = "1", features = [
+  "macros",
+  "rt-multi-thread",
+  "fs",
+  "io-util",
+] }
+tracing-subscriber = "0.3.18"
+reqwest = "0.12.7"
