@@ -1,6 +1,7 @@
 /data
 /local
 /go.work*
+*.log
 
 # Added by cargo
 
