@@ -1,19 +1,24 @@
-FROM debian:bookworm
+FROM golang:bookworm AS builder
 
-RUN apt-get update && \
-    DEBIAN_FRONTEND="noninteractive" \
-    apt-get install -y \
-    curl
+ENV GOWORK=off
+ENV GOTOOLCHAIN=local
+ENV CGO_ENABLED=0
 
-RUN LATEST_VERSION="$(curl -fsS -w "%{redirect_url}" -o /dev/null "https://github.com/ikatson/rqbit/releases/latest" | grep -oP '(?<=/releases/tag/)[^/]+$')" && \
-    curl -fSL --output /usr/local/bin/rqbit "https://github.com/ikatson/rqbit/releases/download/$LATEST_VERSION/rqbit-linux-static-x86_64" && \
-    chmod +x /usr/local/bin/rqbit
+WORKDIR /usr/src/app
 
-COPY honor-downloader /usr/local/bin/honor-downloader
-COPY entrypoint.sh /entrypoint.sh
+# pre-copy/cache go.mod for pre-downloading dependencies and only redownloading them in subsequent builds if they change
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download && go mod verify
 
-RUN chmod +x /usr/local/bin/honor-downloader && chmod +x /entrypoint.sh
+COPY . .
 
-WORKDIR /data
+RUN go build -x -v -trimpath -ldflags "-s -w" -buildvcs=false -o /usr/local/bin/honor-downloader .
 
-ENTRYPOINT ["/entrypoint.sh"]
+FROM gcr.io/distroless/base-debian12
+
+COPY --from=builder /usr/local/bin/honor-downloader /usr/local/bin/honor-downloader
+
+WORKDIR /tmp
+
+ENTRYPOINT ["/usr/local/bin/honor-downloader"]
