@@ -13,7 +13,7 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -x -v -trimpath -ldflags "-s -w" -buildvcs=false -o /usr/local/bin/honor-downloader .
+RUN commit="$(git rev-parse HEAD)" && go build -x -v -trimpath -ldflags "-s -w -X main.commit=${commit}" -buildvcs=false -o /usr/local/bin/honor-downloader .
 
 FROM gcr.io/distroless/base-debian12
 

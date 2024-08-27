@@ -1,0 +1,16 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: docker run --rm -v `pwd`:/app -w /app goreleaser/goreleaser --verbose release --snapshot --clean --skip=announce,publish,validate

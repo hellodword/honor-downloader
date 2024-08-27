@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+env:
+  - GO111MODULE=on
+  - GOWORK=off
+  - GOTOOLCHAIN=local
+  - CGO_ENABLED=0
+
+before:
+  hooks:
+    - go mod download
+    - go mod verify
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+gomod:
+  proxy: true
+
+report_sizes: true
+
+git:
+  ignore_tags:
+    - "{{ if not .IsNightly }}nightly{{ end }}"
+
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      # - "386"
+      # - arm
+      - arm64
+      # - s390x
+      # - ppc64le
+    # goarm:
+    #   - "5"
+    #   - "6"
+    #   - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: windows
+        goarch: arm64
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: s390x
+      - goos: darwin
+        goarch: ppc64le
+      - goos: windows
+        goarch: ppc64le
+    # goamd64:
+    #   - v1
+    #   - v2
+    #   - v3
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -buildid= -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.treeState={{ .IsGitDirty }} -X main.date={{.CommitDate}}
+
+universal_binaries:
+  - replace: true
+
+checksum:
+  algorithm: sha256
+  split: true
+
+archives:
+  - files:
+      - none*
+    format_overrides:
+      - goos: windows
+        format: zip

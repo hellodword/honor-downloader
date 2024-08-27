@@ -18,7 +18,13 @@ func main() {
 	realFilename := flag.String("name", "", "real filename")
 	dataDir := flag.String("dir", pwd, "data dir")
 	verbose := flag.Bool("verbose", true, "show verbose log")
+	version := flag.Bool("version", false, "show version")
 	flag.Parse()
+
+	if *version {
+		printVersion()
+		os.Exit(0)
+	}
 
 	if *verbose {
 		slog.SetLogLoggerLevel(slog.LevelDebug)
