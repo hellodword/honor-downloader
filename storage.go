@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -220,7 +220,7 @@ func (me *filePieceImpl) pieceKey() metainfo.PieceKey {
 func (fs *filePieceImpl) Completion() storage.Completion {
 	c, err := fs.completion.Get(fs.pieceKey())
 	if err != nil {
-		log.Printf("error getting piece completion: %s", err)
+		slog.Error("error getting piece completion", "error", err)
 		c.Ok = false
 		return c
 	}

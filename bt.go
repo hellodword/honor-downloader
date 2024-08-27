@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 
 	"github.com/anacrolix/torrent"
@@ -82,6 +83,8 @@ func downloadTorrent(r io.Reader, tmpDir, targetPath string, fileFilter func(pat
 		}
 	}
 
+	slog.Debug("downloading pieces", "pending", pending)
+
 	sub := t.SubscribePieceStateChanges()
 	defer sub.Close()
 
@@ -101,7 +104,7 @@ func downloadTorrent(r io.Reader, tmpDir, targetPath string, fileFilter func(pat
 			if _, ok := pending[ev.Index]; !ok {
 				continue
 			}
-			fmt.Printf("%s: %d\t%s: %+v\n", "piece", ev.Index, "state", ev.PieceState)
+			slog.Debug("piece status", "index", ev.Index, "state", ev.PieceState)
 			if ev.PieceState.Completion == expected {
 				delete(pending, ev.Index)
 				if len(pending) == 0 {

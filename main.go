@@ -1,31 +1,69 @@
 package main
 
 import (
+	"flag"
+	"log/slog"
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
 func main() {
-
-	anna, err := fetchAnna("https://annas-archive.li/md5/08b0f97b98c977da93cd5e5623686af5")
-	if err != nil {
-		panic(err)
+	pwd, _ := os.Getwd()
+	if pwd == "" {
+		pwd = "."
 	}
-	anna.RealFilename = "The Embodied Soul: Aristotelian Psychology and Physiology in Medieval Europe between 1200 and 1420.epub"
 
-	var dataDir = "data"
+	annaUrl := flag.String("anna", "", "anna url")
+	realFilename := flag.String("name", "", "real filename")
+	dataDir := flag.String("dir", pwd, "data dir")
+	verbose := flag.Bool("verbose", true, "show verbose log")
+	flag.Parse()
 
+	if *verbose {
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	}
+
+	if *annaUrl == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	slog.Debug("fetching anna", "url", *annaUrl)
+	anna, err := fetchAnna(*annaUrl)
+	if err != nil {
+		slog.Error(
+			"error occurred while fetching anna",
+			"error", err,
+		)
+		os.Exit(1)
+	}
+	anna.RealFilename = *realFilename
+	if anna.RealFilename == "" {
+		anna.RealFilename = filepath.Base(anna.Filename)
+	}
+
+	slog.Debug("fetching torrent file", "TorrentLink", anna.TorrentLink)
 	resp, err := http.Get(anna.TorrentLink)
 	if err != nil {
-		panic(err)
+		slog.Error(
+			"error occurred while fetching torrent file",
+			"error", err,
+		)
+		os.Exit(1)
 	}
 	defer resp.Body.Close()
 
-	err = downloadTorrent(resp.Body, "", filepath.Join(dataDir, anna.RealFilename), func(path string) bool {
+	targetPath := filepath.Join(*dataDir, anna.RealFilename)
+	slog.Debug("downloading anna", "targetPath", targetPath, "Filename", anna.Filename)
+	err = downloadTorrent(resp.Body, "", targetPath, func(path string) bool {
 		return filepath.Base(path) == anna.Filename
 	})
 	if err != nil {
-		panic(err)
+		slog.Error(
+			"error occurred while downloading the torrent",
+			"error", err,
+		)
+		os.Exit(1)
 	}
-
 }
