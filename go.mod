@@ -4,19 +4,19 @@ go 1.23.0
 
 require (
 	github.com/anacrolix/missinggo v1.3.0
-	github.com/anacrolix/torrent v1.56.1
+	github.com/anacrolix/torrent v1.57.0
 )
 
 require (
 	github.com/RoaringBitmap/roaring v1.2.3 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect
 	github.com/alecthomas/atomic v0.1.0-alpha2 // indirect
-	github.com/anacrolix/chansync v0.3.0 // indirect
+	github.com/anacrolix/chansync v0.4.1-0.20240627045151-1aa1ac392fe8 // indirect
 	github.com/anacrolix/dht/v2 v2.19.2-0.20221121215055-066ad8494444 // indirect
 	github.com/anacrolix/envpprof v1.3.0 // indirect
 	github.com/anacrolix/generics v0.0.2-0.20240227122613-f95486179cab // indirect
 	github.com/anacrolix/go-libutp v1.3.1 // indirect
-	github.com/anacrolix/log v0.15.2 // indirect
+	github.com/anacrolix/log v0.15.3-0.20240627045001-cd912c641d83 // indirect
 	github.com/anacrolix/missinggo/perf v1.0.0 // indirect
 	github.com/anacrolix/missinggo/v2 v2.7.3 // indirect
 	github.com/anacrolix/mmsg v1.0.0 // indirect
@@ -67,13 +67,14 @@ require (
 	github.com/pion/udp v0.1.4 // indirect
 	github.com/pion/webrtc/v3 v3.1.42 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/protolambda/ctxlock v0.1.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rs/dnscache v0.0.0-20211102005908-e0241e321417 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
-	go.opentelemetry.io/otel v1.8.0 // indirect
-	go.opentelemetry.io/otel/trace v1.8.0 // indirect
+	go.opentelemetry.io/otel v1.11.1 // indirect
+	go.opentelemetry.io/otel/trace v1.11.1 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/net v0.23.0 // indirect
