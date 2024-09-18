@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log/slog"
@@ -50,7 +51,7 @@ func (me fileClientImpl) Close() error {
 	return me.opts.PieceCompletion.Close()
 }
 
-func (fs fileClientImpl) OpenTorrent(info *metainfo.Info, infoHash metainfo.Hash) (_ storage.TorrentImpl, err error) {
+func (fs fileClientImpl) OpenTorrent(ctx context.Context, info *metainfo.Info, infoHash metainfo.Hash) (_ storage.TorrentImpl, err error) {
 	dir := fs.opts.TorrentDirMaker(fs.opts.ClientBaseDir, info, infoHash)
 	upvertedFiles := info.UpvertedFiles()
 	files := make([]file, 0, len(upvertedFiles))
